@@ -1,0 +1,35 @@
+<!-- https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API#Cue_settings -->
+<doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+    <title>Video Sample Page</title>
+    <style>
+      ::cue {
+        color:darkolivegreen;
+        font-weight: bold;
+        font-size: 40px;
+        background-color: transparent;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Video Sample Page</h1>
+    <div id="container">
+      <video id='video' controls="controls" preload='none'
+        width="600" poster="http://media.w3.org/2010/05/sintel/poster.png">
+        <source id='mp4' src="trailer.mp4" type='video/mp4'/>
+        <track kind="subtitles" label="English subtitles" src="captions.vtt" srclang="en" default></track>
+        <p>Your user agent does not support the HTML5 Video element.</p>
+      </video>
+    </div>
+    <script>
+      document.getElementsByTagName('track')[0].addEventListener('cuechange', e => {
+        if(e.target.track.activeCues.length) {
+          console.log('new cue')
+          console.log(e.target.track.activeCues[0].text)
+        }
+      })
+    </script>
+  </body>
+</html>
