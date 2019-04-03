@@ -1,4 +1,5 @@
 <!-- https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API#Cue_settings -->
+<!-- https://www.html5rocks.com/en/tutorials/track/basics/ -->
 <doctype html>
 <html>
   <head>
@@ -6,6 +7,11 @@
     <title>Video Sample Page</title>
     <style>
       ::cue {
+        color:darkgoldenrod;
+        font-size: 20px;
+        background-color: transparent;
+      }
+      ::cue(b) {
         color:darkolivegreen;
         font-weight: bold;
         font-size: 40px;
@@ -16,19 +22,27 @@
   <body>
     <h1>Video Sample Page</h1>
     <div id="container">
-      <video id='video' controls="controls" preload='none'
+      <video id='video' controls="controls" preload='none' autoplay
         width="600" poster="http://media.w3.org/2010/05/sintel/poster.png">
         <source id='mp4' src="trailer.mp4" type='video/mp4'/>
-        <track kind="subtitles" label="English subtitles" src="captions.vtt" srclang="en" default></track>
+        <track kind="subtitles" id="subtitles" src="captions.vtt" srclang="en" default></track>
+        <track kind="metadata" mode="hidden" id="colors" src="color-events.vtt" srclang="en" default
+          onload="() => console.log('looooaded')"
+        ></track>
         <p>Your user agent does not support the HTML5 Video element.</p>
       </video>
     </div>
+    <h1 id="currentColor"></h1>
     <script>
-      document.getElementsByTagName('track')[0].addEventListener('cuechange', e => {
-        if(e.target.track.activeCues.length) {
-          console.log('new cue')
-          console.log(e.target.track.activeCues[0].text)
-        }
+      const captionTrack = document.getElementById("subtitles")
+      const colorsTrack = document.getElementById("colors");
+      colorsTrack.addEventListener("load", function () {
+        Array.from(this.track.cues).forEach(cue => {
+          cue.onenter = e => {
+            const color = JSON.parse(e.target.text).color
+            document.body.style.backgroundColor = color
+          }
+        })
       })
     </script>
   </body>
